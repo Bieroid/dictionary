@@ -4,24 +4,24 @@ import (
 	"strconv"
 )
 
-type translator struct { // сделать ее приватной и переименовать DONE
+type translator struct {
 	language string
-	dict map[string][]string // сделать значения слайсом стрингов для синонимов + проверки на дубли DONE
+	dict map[string][]string
 }
 
 var dictionary []translator;
 
-func init() { // переделать инициализацию в 1 строку (сразу с данными) // DONE
-	mEng := map[string][]string{"hello": {"привет"}}
+func init() {
+	mEng := map[string][]string{"привет": {"hello"}}
 	strEng := translator{language: "английский", dict: mEng}
 	dictionary = append(dictionary, strEng)
 }
 
-func IsLanguangeAviable(language string) (string, bool) { // Возврат DONE
+func IsLanguangeAviable(language string) (string, bool) {
 	lang := ""
 	
 	for i := 0; i < len(dictionary); i++ {
-		if (dictionary[i].language == language) || (strconv.Itoa(i + 1) == language) { // Сделать независимость language от регистра и в переменной и в стракте // DONE
+		if (dictionary[i].language == language) || (strconv.Itoa(i + 1) == language) {
 			if strconv.Itoa(i) == language {
 				lang = language
 			}
@@ -31,24 +31,20 @@ func IsLanguangeAviable(language string) (string, bool) { // Возврат DONE
 	return lang, true
 }
 
-func FindTranslate(language string, word string) string { // Разобраться в исправленном коде // DONE
+func FindTranslate(language string, word string) []string {
 	for i := 0; i < len(dictionary); i++ {
-		if (dictionary[i].language == language) || (strconv.Itoa(i + 1) == language) { // Сделать независимость language от регистра и в переменной и в стракте //DONE
-			for trans, value := range dictionary[i].dict {
-				for _, seekWord := range value {
-					if seekWord == word {
-						return trans
-					}
-				}
+		if (dictionary[i].language == language) || (strconv.Itoa(i + 1) == language) {
+			if _, ok := dictionary[i].dict[word]; ok {
+				return dictionary[i].dict[word]
 			}
 		}
 	}
-	return ""
+	return nil
 }
 
 func AddLanguage(lang string) bool {
 	if _, ok := IsLanguangeAviable(lang); ok {
-		strNew := translator{language: lang, dict: make(map[string][]string)} // инициализация в 1 строчку //DONE
+		strNew := translator{language: lang, dict: make(map[string][]string)}
 		dictionary = append(dictionary, strNew)
 		return true
 	}
@@ -58,7 +54,7 @@ func AddLanguage(lang string) bool {
 func AddTranslate(lang string, word string, trans string) bool {
 	for i := 0; i < len(dictionary); i++ {
 		if (dictionary[i].language == lang) || (strconv.Itoa(i + 1) == lang) {
-			for _, value := range dictionary[i].dict {
+			if value, ok := dictionary[i].dict[trans]; ok {
 				for _, seekWord := range value {
 					if seekWord == word {
 						return false

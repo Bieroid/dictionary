@@ -6,9 +6,9 @@ import (
 )
 
 
-func Translate(language, word string) (transl string, err error) {
+func Translate(language, word string) (transl []string, err error) {
 	transl = repository.FindTranslate(language, word)
-	if transl == "" {
+	if transl == nil {
 		err = errors.New("перевод данного слова отсутствует в словаре")
 	}
 	return transl, err

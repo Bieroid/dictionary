@@ -13,26 +13,6 @@ func init() {
 	fmt.Printf("Добро пожаловать в словарь для перевода слов c английского.\nНа данный момент проект находится в разработке и для ознакомления предоставлена данная бета-версия(v 0.3)\nДля вывода списка поддерживаемых команд - введите help.\n\n")
 }
 
-func checkInput(input string) (err error) {
-	if len(strings.Fields(input)) != 1 {
-		err = errors.New("некорректный ввод")
-		return
-	}
-	return nil
-}
-
-func ftReader(reader *bufio.Reader) (input string, err error) {
-	input, _ = reader.ReadString('\n')
-	input = strings.TrimSpace(input)
-	input = strings.ToLower(input)
-	err = checkInput(input)
-	return
-}
-
-func commandList() {
-	fmt.Printf("Список комманд:\n 1. Перевод\n 2. Добавить\n 3. Помощь\n 4. Языки\n 5. Выход\n\nВведите комманду:\n")
-}
-
 func Start() {
 	reader := bufio.NewReader(os.Stdin)
 
@@ -61,6 +41,26 @@ func Start() {
 				fmt.Printf("Ошибка: %s\n\n", err)
 		}
 	}
+}
+
+func checkInput(input string) (err error) {
+	if len(strings.Fields(input)) != 1 {
+		err = errors.New("некорректный ввод")
+		return
+	}
+	return nil
+}
+
+func ftReader(reader *bufio.Reader) (input string, err error) {
+	input, _ = reader.ReadString('\n')
+	input = strings.TrimSpace(input)
+	input = strings.ToLower(input)
+	err = checkInput(input)
+	return
+}
+
+func commandList() {
+	fmt.Printf("Список комманд:\n 1. Перевод\n 2. Добавить\n 3. Помощь\n 4. Языки\n 5. Выход\n\nВведите комманду:\n")
 }
 
 func ftReaderLang(reader *bufio.Reader) (input string, err error) {
@@ -105,7 +105,20 @@ func handleTranslate(reader *bufio.Reader) {
 		fmt.Printf("Ошибка: %s\n\n", err)
 		return
 	}
-	fmt.Printf("Перевод слова %s: %s\n\n", word, trans)
+	showTranslate(trans, word)
+}
+
+func showTranslate(trans []string, word string) {
+	for i := 0; i < len(trans); i++ {
+		if i == 0 {
+			fmt.Printf("\nПеревод слова %s: %s\n", word, trans[i])
+		} else if i == 1 {
+			fmt.Printf("Также допустимы следующие слова-синонимы: %s", trans[i])
+		} else {
+			fmt.Printf(", %s\n", trans[i])
+		}
+	}
+	fmt.Println()
 }
 
 func handleAdd(reader *bufio.Reader) {
@@ -168,7 +181,7 @@ func handleAddWord(reader *bufio.Reader) {
 		fmt.Printf("Ошибка: %s\n\n", err)
 		return
 	}
-	err = service.AddWord(language, trans, word)
+	err = service.AddWord(language, word, trans)
 	if err != nil {
 		fmt.Printf("Ошибка: %s\n\n", err)
 		return
