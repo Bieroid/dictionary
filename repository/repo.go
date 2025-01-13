@@ -62,6 +62,7 @@ func AddTranslate(lang string, word string, trans string) bool {
 				}
 			}
 			dictionary[i].dict[trans] = append(dictionary[i].dict[trans], word)
+			break
 		}
 	}
 	return true
