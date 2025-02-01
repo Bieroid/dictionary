@@ -1,0 +1,12 @@
+CREATE TABLE language (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL UNIQUE,
+    data TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE word (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    translate VARCHAR(255) NOT NULL UNIQUE,
+    FOREIGN KEY (language_id) REFERENCES language(id)
+);

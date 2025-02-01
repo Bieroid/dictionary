@@ -1,0 +1,162 @@
+definitions:
+  dto.LanguageInfo:
+    properties:
+      date:
+        type: string
+      language:
+        type: string
+    type: object
+  dto.LanguageRequest:
+    properties:
+      language:
+        type: string
+    type: object
+  dto.TranslationRequest:
+    properties:
+      language:
+        type: string
+      translation:
+        type: string
+      word:
+        type: string
+    type: object
+info:
+  contact: {}
+paths:
+  /dictionary/api/languages:
+    get:
+      description: Возвращает список языков, доступных в базе данных
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              items:
+                $ref: '#/definitions/dto.LanguageInfo'
+              type: array
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Получить языки
+      tags:
+      - languages
+    post:
+      consumes:
+      - application/json
+      description: Добавляет новый язык в базу данных
+      parameters:
+      - description: Данные для добавления языка
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/dto.LanguageRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "409":
+          description: Conflict
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Добавить язык
+      tags:
+      - languages
+  /dictionary/api/translate:
+    get:
+      consumes:
+      - application/json
+      description: Переводит слово на указанный язык
+      parameters:
+      - description: Язык для перевода
+        in: query
+        name: language
+        required: true
+        type: string
+      - description: Слово для перевода
+        in: query
+        name: word
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              items:
+                type: string
+              type: array
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Перевести слово
+      tags:
+      - translate
+  /dictionary/api/words:
+    post:
+      consumes:
+      - application/json
+      description: Добавляет новый перевод в базу данных
+      parameters:
+      - description: Данные для добавления перевода
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/dto.TranslationRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "409":
+          description: Conflict
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Добавить перевод
+      tags:
+      - translate
+swagger: "2.0"
